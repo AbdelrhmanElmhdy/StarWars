@@ -5,11 +5,10 @@
 //  Created by Abdelrhman Elmahdy on 15/03/2023.
 //
 
-import XCTest
 @testable import StarWars
+import XCTest
 
 final class StarWarsTests: XCTestCase {
-
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -29,9 +28,8 @@ final class StarWarsTests: XCTestCase {
 
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
-        self.measure {
+        measure {
             // Put the code you want to measure the time of here.
         }
     }
-
 }

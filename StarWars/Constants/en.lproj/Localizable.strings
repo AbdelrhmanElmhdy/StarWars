@@ -1,0 +1,28 @@
+/*
+   Localizable.strings
+   StarWars
+
+   Created by Abdelrhman Elmahdy on 15/03/2023.
+
+ */
+
+// MARK: UI
+
+"Home" = "Home";
+"Cancel" = "Cancel";
+"Try Again" = "Try Again";
+
+"Settings" = "Settings";
+"Dark Mode" = "Dark Mode";
+"Language" = "Language";
+
+"Off" = "Off";
+"On" = "On";
+"System" = "System";
+
+// MARK: Errors
+
+"No Internet Connection" = "No Internet Connection";
+"Something went wrong!" = "Something went wrong!";
+"Try again later" = "Try again later";
+"Check internet connection and try again later" = "Check internet connection and try again later";

@@ -8,7 +8,6 @@
 import XCTest
 
 final class StarWarsUITestsLaunchTests: XCTestCase {
-
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }
