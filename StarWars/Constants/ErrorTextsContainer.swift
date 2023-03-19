@@ -13,6 +13,6 @@ struct ErrorTextsContainer {
     static let loginRequired = "Login required".localized
     static let loginAdvice = "login".localized
     static let noPermission = "You don't have permission".localized
-    static let noInternetConnection = "No Internet Connection".localized
-    static let checkInternetConnectionAdvice = "Check internet connection and try again later".localized
+    static let requestTimedOut = "Request Timed Out".localized
+    static let checkInternetConnectionAdvice = "Check your internet connection and try again later".localized
 }

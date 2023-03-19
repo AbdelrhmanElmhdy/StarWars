@@ -20,7 +20,7 @@ class MainViewControllersFactory {
 }
 
 extension MainViewControllersFactory: HomeViewControllersFactory {
-    func makeHomeViewController(for coordinator: Coordinator) -> HomeViewController {
+    func makeHomeViewController(for coordinator: ViewingCard & ViewingAllCards) -> HomeViewController {
         let viewModel = HomeViewModel(
             characterService: dependencyContainer.characterService,
             filmService: dependencyContainer.filmService,
@@ -30,6 +30,27 @@ extension MainViewControllersFactory: HomeViewControllersFactory {
             vehicleService: dependencyContainer.vehicleService
         )
         return HomeViewController(coordinator: coordinator, viewModel: viewModel)
+    }
+
+    func makeCardDetailsViewController(
+        for coordinator: ViewingCard,
+        card: CardPresentable,
+        referencesFetcher: @escaping GenericCardReferencesFetcher
+    ) -> CardDetailsViewController {
+        let viewModel = CardDetailsViewModel(card: card, cardReferencesFetcher: referencesFetcher)
+        return CardDetailsViewController(coordinator: coordinator, viewModel: viewModel)
+    }
+
+    func makeCardsCollectionViewController(
+        for coordinator: ViewingCard,
+        cards: [CardPresentable],
+        pageFetcher: @escaping CardPageFetcher,
+        referencesFetcher: @escaping GenericCardReferencesFetcher
+    ) -> CardsCollectionViewController {
+        let viewModel = CardsViewModel(cards: cards,
+                                       pageFetcher: pageFetcher,
+                                       referencesFetcher: referencesFetcher)
+        return CardsCollectionViewController(coordinator: coordinator, viewModel: viewModel)
     }
 }
 

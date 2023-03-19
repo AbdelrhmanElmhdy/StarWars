@@ -22,7 +22,7 @@
 
 // MARK: Errors
 
-"No Internet Connection" = "No Internet Connection";
+"Request Timed Out" = "Request Timed Out";
 "Something went wrong!" = "Something went wrong!";
 "Try again later" = "Try again later";
-"Check internet connection and try again later" = "Check internet connection and try again later";
+"Check your internet connection and try again later" = "Check your internet connection and try again later";

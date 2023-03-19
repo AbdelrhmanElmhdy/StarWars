@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import UIKit
 
 struct Film: Identifiable, Equatable {
     var id: String { url.lastPathComponent }
+    var image: UIImage?
     let title: String
     let episodeId: Int
     let openingCrawl: String
@@ -23,6 +25,33 @@ struct Film: Identifiable, Equatable {
     let created: Date
     let edited: Date
     let url: URL
+}
+
+extension Film: CardPresentable {
+    static let title = "Films".localized
+
+    var referencedCards: [CardsReference] {
+        [
+            CardsReference(referenceTitle: Character.title, ids: characters.compactMap { Int($0.lastPathComponent) }),
+            CardsReference(referenceTitle: Planet.title, ids: planets.compactMap { Int($0.lastPathComponent) }),
+            CardsReference(referenceTitle: Species.title, ids: species.compactMap { Int($0.lastPathComponent) }),
+            CardsReference(referenceTitle: Vehicle.title, ids: vehicles.compactMap { Int($0.lastPathComponent) }),
+            CardsReference(referenceTitle: Spaceship.title, ids: starships.compactMap { Int($0.lastPathComponent) }),
+        ]
+    }
+
+    var info: [String: String] {
+        let info = [
+            "Title".localized: title,
+            "Episode Id".localized: String(episodeId),
+            "Opening Crawl".localized: openingCrawl,
+            "Director".localized: director,
+            "Producer".localized: producer,
+            "Release Date".localized: DateFormatter.localizedString(from: releaseDate, dateStyle: .medium, timeStyle: .none),
+        ]
+
+        return info
+    }
 }
 
 extension Film: Cacheable {
@@ -67,6 +96,10 @@ extension Film: Codable {
         created = try container.decodeIntoDate(String.self, forKey: .created, using: .iso8601)
         edited = try container.decodeIntoDate(String.self, forKey: .edited, using: .iso8601)
         url = try container.decode(URL.self, forKey: .url)
+
+        if let id = Int(id) {
+            image = .getFilmImage(ofID: id)
+        }
     }
 
     func encode(to encoder: Encoder) throws {

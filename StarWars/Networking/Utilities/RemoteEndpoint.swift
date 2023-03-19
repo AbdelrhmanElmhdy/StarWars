@@ -57,6 +57,7 @@ extension RemoteEndpoint {
         }
 
         request.cachePolicy = isConnected ? connectedCachePolicy : noConnectionCachePolicy
+        request.timeoutInterval = 25
 
         return request
     }

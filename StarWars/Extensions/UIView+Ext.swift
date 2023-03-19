@@ -31,10 +31,6 @@ extension UIView {
     }
 
     func tearDown() {
-        for subview in subviews {
-            subview.tearDown()
-        }
-
         removeFromSuperview()
         NSLayoutConstraint.deactivate(constraints)
         removeConstraints(constraints)

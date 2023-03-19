@@ -13,6 +13,7 @@ struct UITextsContainer {
     static let home = "Home".localized
     static let cancel = "Cancel".localized
     static let tryAgain = "Try Again".localized
+    static let showAll = "Show All".localized
 
     // MARK: Settings Stack UI Texts
 

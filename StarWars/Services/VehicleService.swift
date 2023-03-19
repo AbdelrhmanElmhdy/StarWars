@@ -18,8 +18,23 @@ class VehicleService: VehicleServiceProtocol {
     }
 
     func fetchFromServer(withID id: Int) -> AnyPublisher<Vehicle, NetworkRequestError> {
-        networkManager.executeRequest(SWAPIEndpoint.vehicle(id: id))
-            .map { [weak self] in self?.storeInCache($0); return $0 }.eraseToAnyPublisher()
+        let endpoint = SWAPIEndpoint.vehicle(id: id)
+
+        // If the object of the specified ID is already cached in memory return the cached response.
+        if let urlString = endpoint.url?.absoluteString,
+           let cachedResponse = fetchFromCache(forKey: NSString(string: urlString)) {
+            let passThroughSubject = PassthroughSubject<Vehicle, NetworkRequestError>()
+            let publisher = passThroughSubject.eraseToAnyPublisher()
+            passThroughSubject.send(cachedResponse)
+
+            return publisher
+        }
+
+        return networkManager.executeRequest(endpoint)
+            .map { [weak self] in
+                self?.storeInCache($0)
+                return $0
+            }.eraseToAnyPublisher()
     }
 
     func fetchAllFromServer(inPage page: Int = 1) -> AnyPublisher<PaginatedResponse<Vehicle>, NetworkRequestError> {

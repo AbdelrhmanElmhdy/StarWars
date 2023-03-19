@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import UIKit
 
 struct Character: Identifiable, Equatable {
     var id: String { url.lastPathComponent }
+    var image: UIImage?
     let name: String
     let height: Float?
     let mass: Float?
@@ -25,6 +27,41 @@ struct Character: Identifiable, Equatable {
     let created: Date
     let edited: Date
     let url: URL
+}
+
+extension Character: CardPresentable {
+    static let title = "Characters".localized
+    var title: String { name }
+
+    var referencedCards: [CardsReference] {
+        [
+            CardsReference(referenceTitle: Film.title, ids: films.compactMap { Int($0.lastPathComponent) }),
+            CardsReference(referenceTitle: Species.title, ids: species.compactMap { Int($0.lastPathComponent) }),
+            CardsReference(referenceTitle: Vehicle.title, ids: vehicles.compactMap { Int($0.lastPathComponent) }),
+            CardsReference(referenceTitle: Spaceship.title, ids: starships.compactMap { Int($0.lastPathComponent) }),
+        ]
+    }
+
+    var info: [String: String] {
+        var info = [
+            "Name".localized: name,
+            "Hair Color".localized: hairColor,
+            "Skin Color".localized: skinColor,
+            "Eye Color".localized: eyeColor,
+            "Birth Year".localized: birthYear,
+            "Gender".localized: gender,
+        ]
+
+        if let height = height {
+            info["Height".localized] = String(height)
+        }
+
+        if let mass = mass {
+            info["Mass".localized] = String(mass)
+        }
+
+        return info
+    }
 }
 
 extension Character: Cacheable {
@@ -71,6 +108,10 @@ extension Character: Codable {
         created = try container.decodeIntoDate(String.self, forKey: .created, using: .iso8601)
         edited = try container.decodeIntoDate(String.self, forKey: .edited, using: .iso8601)
         url = try container.decode(URL.self, forKey: .url)
+
+        if let id = Int(id) {
+            image = .getCharacterImage(ofID: id)
+        }
     }
 
     func encode(to encoder: Encoder) throws {

@@ -36,12 +36,12 @@ enum NetworkRequestError: UserFriendlyError {
                             isFatal: Bool = true)
 
     case failedToConnectToInternet(debugDescription: String = "Failed to connect to internet",
-                                   userFriendlyDescription: String? = .errors.noInternetConnection,
+                                   userFriendlyDescription: String? = .errors.requestTimedOut,
                                    userFriendlyRecoverySuggestion: String? = .errors.checkInternetConnectionAdvice,
                                    isFatal: Bool = false)
 
     case requestTimedOut(debugDescription: String = "Request timed out",
-                         userFriendlyDescription: String? = .errors.noInternetConnection,
+                         userFriendlyDescription: String? = .errors.requestTimedOut,
                          userFriendlyRecoverySuggestion: String? = .errors.checkInternetConnectionAdvice,
                          isFatal: Bool = false)
 
@@ -106,7 +106,7 @@ enum NetworkRequestError: UserFriendlyError {
             userFriendlyDescription = .errors.noPermission
         case 408:
             statusCodeDescription += "Request Timeout"
-            userFriendlyDescription = .errors.noInternetConnection
+            userFriendlyDescription = .errors.requestTimedOut
             userFriendlyRecoverySuggestion = .errors.checkInternetConnectionAdvice
         case 400 ... 499:
             statusCodeDescription += "Bad request"

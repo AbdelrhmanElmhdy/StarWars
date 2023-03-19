@@ -18,8 +18,23 @@ class SpaceshipService: SpaceshipServiceProtocol {
     }
 
     func fetchFromServer(withID id: Int) -> AnyPublisher<Spaceship, NetworkRequestError> {
-        networkManager.executeRequest(SWAPIEndpoint.spaceship(id: id))
-            .map { [weak self] in self?.storeInCache($0); return $0 }.eraseToAnyPublisher()
+        let endpoint = SWAPIEndpoint.spaceship(id: id)
+
+        // If the object of the specified ID is already cached in memory return the cached response.
+        if let urlString = endpoint.url?.absoluteString,
+           let cachedResponse = fetchFromCache(forKey: NSString(string: urlString)) {
+            let passThroughSubject = PassthroughSubject<Spaceship, NetworkRequestError>()
+            let publisher = passThroughSubject.eraseToAnyPublisher()
+            passThroughSubject.send(cachedResponse)
+
+            return publisher
+        }
+
+        return networkManager.executeRequest(endpoint)
+            .map { [weak self] in
+                self?.storeInCache($0)
+                return $0
+            }.eraseToAnyPublisher()
     }
 
     func fetchAllFromServer(inPage page: Int = 1) -> AnyPublisher<PaginatedResponse<Spaceship>, NetworkRequestError> {

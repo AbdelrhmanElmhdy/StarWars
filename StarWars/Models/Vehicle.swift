@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import UIKit
 
 struct Vehicle: Identifiable, Equatable {
-    var id: Int { 1 }
-
+    var id: String { url.lastPathComponent }
+    var image: UIImage?
     let name: String
     let model: String
     let manufacturer: String
@@ -26,6 +27,49 @@ struct Vehicle: Identifiable, Equatable {
     let created: Date
     let edited: Date
     let url: URL
+}
+
+extension Vehicle: CardPresentable {
+    static let title = "Vehicle".localized
+    var title: String { name }
+
+    var referencedCards: [CardsReference] {
+        [
+            CardsReference(referenceTitle: Character.title, ids: pilots.compactMap { Int($0.lastPathComponent) }),
+            CardsReference(referenceTitle: Film.title, ids: films.compactMap { Int($0.lastPathComponent) }),
+        ]
+    }
+
+    var info: [String: String] {
+        var info = [
+            "name".localized: name,
+            "model".localized: model,
+            "manufacturer".localized: manufacturer,
+            "maxAtmospheringSpeed".localized: maxAtmospheringSpeed,
+            "consumables".localized: consumables,
+            "vehicleClass".localized: vehicleClass,
+        ]
+
+        if let costInCredits = costInCredits {
+            info["CostInCredits".localized] = String(costInCredits)
+        }
+
+        if let crew = crew {
+            let stringCrew: String
+            if crew.lowerBound == crew.upperBound {
+                stringCrew = String(crew.lowerBound)
+            } else {
+                stringCrew = "\(crew.lowerBound)-\(crew.upperBound)"
+            }
+            info["Crew".localized] = stringCrew
+        }
+
+        if let cargoCapacity = cargoCapacity {
+            info["Cargo Capacity".localized] = String(cargoCapacity)
+        }
+
+        return info
+    }
 }
 
 extension Vehicle: Cacheable {
@@ -72,6 +116,10 @@ extension Vehicle: Codable {
         created = try container.decodeIntoDate(String.self, forKey: .created, using: .iso8601)
         edited = try container.decodeIntoDate(String.self, forKey: .edited, using: .iso8601)
         url = try container.decode(URL.self, forKey: .url)
+
+        if let id = Int(id) {
+            image = .getVehicleImage(ofID: id)
+        }
     }
 
     func encode(to encoder: Encoder) throws {

@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import UIKit
 
 struct Species: Identifiable, Equatable {
-    var id: Int { 1 }
-
+    var id: String { url.lastPathComponent }
+    var image: UIImage?
     let name: String
     let classification: String
     let designation: String
@@ -25,6 +26,40 @@ struct Species: Identifiable, Equatable {
     let created: Date
     let edited: Date
     let url: URL
+}
+
+extension Species: CardPresentable {
+    static let title = "Species".localized
+    var title: String { name }
+
+    var referencedCards: [CardsReference] {
+        [
+            CardsReference(referenceTitle: Character.title, ids: people.compactMap { Int($0.lastPathComponent) }),
+            CardsReference(referenceTitle: Film.title, ids: films.compactMap { Int($0.lastPathComponent) }),
+        ]
+    }
+
+    var info: [String: String] {
+        var info = [
+            "Name".localized: name,
+            "Classification".localized: classification,
+            "Designation".localized: designation,
+            "SkinColors".localized: skinColors,
+            "HairColors".localized: hairColors,
+            "EyeColors".localized: eyeColors,
+            "Language".localized: language,
+        ]
+
+        if let averageHeight = averageHeight {
+            info["Average Height".localized] = String(averageHeight)
+        }
+
+        if let averageLifespan = averageLifespan {
+            info["Average Lifespan".localized] = String(averageLifespan)
+        }
+
+        return info
+    }
 }
 
 extension Species: Cacheable {
@@ -69,6 +104,10 @@ extension Species: Codable {
         created = try container.decodeIntoDate(String.self, forKey: .created, using: .iso8601)
         edited = try container.decodeIntoDate(String.self, forKey: .edited, using: .iso8601)
         url = try container.decode(URL.self, forKey: .url)
+
+        if let id = Int(id) {
+            image = .getSpeciesImage(ofID: id)
+        }
     }
 
     func encode(to encoder: Encoder) throws {

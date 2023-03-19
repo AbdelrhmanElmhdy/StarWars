@@ -22,10 +22,10 @@
 
 // MARK: Errors
 
-"No Internet Connection" = "لا يوجد اتصال بالإنترنت";
+"Request Timed Out" = "استغرقت الإستجابة وقتًا طويلًا";
 "Something went wrong!" = "حدث خطأ ما";
 "Try again later" = "حاول مجددًا";
-"Check internet connection and try again later" = "تأكد من اتصالك بالإنترنت و حاول مجددًا";
+"Check your internet connection and try again later" = "تأكد من اتصالك بالإنترنت و حاول مجددًا";
 
 "Login required" = "يجب تسجيل الدخول أولًا";
 "login" = "قم بتسجيل الدخول";

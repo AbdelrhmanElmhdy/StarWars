@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import UIKit
 
 struct Planet: Identifiable, Equatable {
-    var id: Int { 1 }
+    var id: String { url.lastPathComponent }
+    var image: UIImage?
     let name: String
     let rotationPeriod: String
     let orbitalPeriod: String
@@ -23,6 +25,43 @@ struct Planet: Identifiable, Equatable {
     let created: Date
     let edited: Date
     let url: URL
+}
+
+extension Planet: CardPresentable {
+    static let title = "Planets".localized
+    var title: String { name }
+
+    var referencedCards: [CardsReference] {
+        [
+            CardsReference(referenceTitle: Character.title, ids: residents.compactMap { Int($0.lastPathComponent) }),
+            CardsReference(referenceTitle: Film.title, ids: films.compactMap { Int($0.lastPathComponent) }),
+        ]
+    }
+
+    var info: [String: String] {
+        var info = [
+            "Name".localized: name,
+            "Rotation Period".localized: rotationPeriod,
+            "Orbital Period".localized: orbitalPeriod,
+            "Climate".localized: climate,
+            "Gravity".localized: gravity,
+            "Terrain".localized: terrain,
+        ]
+
+        if let diameter = diameter {
+            info["Diameter".localized] = String(diameter)
+        }
+
+        if let surfaceWater = surfaceWater {
+            info["Surface Water".localized] = String(surfaceWater)
+        }
+
+        if let population = population {
+            info["Population".localized] = String(population)
+        }
+
+        return info
+    }
 }
 
 extension Planet: Cacheable {
@@ -65,6 +104,10 @@ extension Planet: Codable {
         created = try container.decodeIntoDate(String.self, forKey: .created, using: .iso8601)
         edited = try container.decodeIntoDate(String.self, forKey: .edited, using: .iso8601)
         url = try container.decode(URL.self, forKey: .url)
+
+        if let id = Int(id) {
+            image = .getPlanetImage(ofID: id)
+        }
     }
 
     func encode(to encoder: Encoder) throws {
